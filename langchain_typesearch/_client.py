@@ -40,9 +40,9 @@ class TypesearchSettings(BaseModel):
     typesearch_base_url: str | None = Field(default_factory=from_env("TYPESEARCH_BASE_URL", default=None))
     """Defaults to ``TYPESEARCH_BASE_URL``, or ``https://api.typesearch.ai``."""
     mode: Mode = "fast"
-    """How much is read before ranking: ``fast`` (default, the cheapest and quickest: headlines and
-    standfirsts), ``ultra`` (headlines only, same price), ``normal`` (also reads the best matches) or ``deep``
-    (reads more and finds the topic in other words too). See https://typesearch.ai/docs/modes."""
+    """How much is read before ranking: ``fast`` (default: headlines and standfirsts, about a second),
+    ``ultra`` (headlines only, the cheapest), ``normal`` (also reads the best matches) or ``deep`` (reads more
+    and finds the topic in other words too). See https://typesearch.ai/docs/modes."""
     days: int | None = Field(default=None, ge=1, le=365)
     """The last N days, when the model (or the query) sets no window. The API's default is 7."""
     include_domains: list[str] | None = None
