@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "langchain-typesearch"
+version = "0.1.0"
+description = "typesearch news search for LangChain: a tool and a retriever, with a calibrated relevance score on every result."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "typesearch" }]
+keywords = ["langchain", "typesearch", "news", "news-api", "search", "tools", "retriever", "agents", "llm", "rag"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Typing :: Typed",
+]
+dependencies = [
+  "langchain-core>=1.0.0,<2.0.0",
+  "typesearch>=0.1.0,<1",
+]
+
+[project.urls]
+Homepage = "https://typesearch.ai"
+Documentation = "https://typesearch.ai/docs/integrations/langchain"
+Repository = "https://github.com/typesearch-ai/langchain-typesearch"
+Issues = "https://github.com/typesearch-ai/langchain-typesearch/issues"
+Changelog = "https://github.com/typesearch-ai/langchain-typesearch/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+  "pytest>=8",
+  "pytest-asyncio>=0.24",
+  "pytest-cov>=5",
+  "langchain-tests>=1.1.9,<2",
+  "langchain>=1.0,<2",
+  "jsonschema>=4.21",
+  "ruff>=0.6",
+  "mypy>=1.11",
+]
+
+# Mientras `typesearch` no esté en PyPI, sale de la carpeta del SDK en el repo de trabajo. Al publicarlo,
+# se borra esta sección y se rehace uv.lock (ver PUBLICAR.md). El paquete construido ya pide
+# "typesearch>=0.1.0": esta sección no entra en él.
+[tool.uv.sources]
+typesearch = { path = "../typesearch-python", editable = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["langchain_typesearch"]
+
+[tool.hatch.build.targets.sdist]
+include = ["langchain_typesearch", "tests", "examples", "README.md", "CHANGELOG.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+source = ["langchain_typesearch"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.ruff]
+line-length = 140
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+# 3.12: numpy (llega con langchain-tests) trae stubs con sintaxis de 3.12. Que el código corre en 3.10 lo
+# comprueban las pruebas del CI en 3.10 y ruff (target-version py310).
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["langchain_typesearch", "examples"]
+plugins = ["pydantic.mypy"]
